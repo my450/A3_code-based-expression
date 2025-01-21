@@ -384,11 +384,20 @@ function generatePetals() {
 }
 
 function resetNotes() {
-  currentLineIndex = 0; // Reset to the first line
-  currentNoteIndex = 0; // Reset the note index
-  noteStatus = Array(noteLines[currentLineIndex].length).fill("pending"); // Reset the note status
-  notesCompleted = true; // Reset the completion flag
+  currentLineIndex = 0; 
+  currentNoteIndex = 0; 
+  noteStatus = Array(noteLines[currentLineIndex].length).fill("pending");
+  notesCompleted = false;
+
+  // Reset all note counters and animations
+  miNoteCount = 0;
+  reNoteCount = 0;
+  doNoteCount = 0;
+  solNoteCount = 0;
+  activeComets = [];
+  flowerAnimation = [];
 }
+
 
 function generateCometForNote(note) {
   // Logic to create and add a comet based on the note played
@@ -463,20 +472,14 @@ function playCorrectSound(note) {
   }
 
   if (note === "E") {
-    miNoteCount++; // Increment the counter for "Mi" notes
-    if (miNoteCount === 1 || miNoteCount === 5) {
-      let additionalSound = document.getElementById("d1"); // First additional sound
-      if (additionalSound) {
-        additionalSound.currentTime = 0; // Reset to the start
-        additionalSound.play().catch((error) => console.error("Error playing additional sound:", error));
-      }
-    } else if (miNoteCount === 2 || miNoteCount === 6) {
-      let additionalSound = document.getElementById("d2"); // Second additional sound
-      if (additionalSound) {
-        additionalSound.currentTime = 0; // Reset to the start
-        additionalSound.play().catch((error) => console.error("Error playing additional sound:", error));
-      }
-    } 
+    miNoteCount++;
+    if ([1, 5].includes(miNoteCount)) {
+      let additionalSound = document.getElementById("d1");
+      if (additionalSound) additionalSound.play().catch(console.error);
+    } else if ([2, 6].includes(miNoteCount)) {
+      let additionalSound = document.getElementById("d2");
+      if (additionalSound) additionalSound.play().catch(console.error);
+    }
   }
 
   // Check if it's the fourth "Re" note and play the additional sound
@@ -493,20 +496,13 @@ function playCorrectSound(note) {
 
   if (note === "D") {
     doNoteCount++; // Increment the counter for "Do" notes
-    if (doNoteCount === 4) {
+    if (doNoteCount === 4 || doNoteCount === 8) {
       let additionalSound = document.getElementById("d6"); // Third "Do" additional sound
       if (additionalSound) {
         additionalSound.currentTime = 0;
         additionalSound.play().catch((error) => console.error("Error playing additional sound:", error));
       }
     }
-    else if (doNoteCount === 8) {
-      let additionalSound = document.getElementById("d6"); // Second additional sound
-      if (additionalSound) {
-        additionalSound.currentTime = 0; // Reset to the start
-        additionalSound.play().catch((error) => console.error("Error playing additional sound:", error));
-      }
-    } 
     else if (doNoteCount === 9) {
       let additionalSound = document.getElementById("d8"); // Second additional sound
       if (additionalSound) {
